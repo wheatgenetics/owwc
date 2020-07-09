@@ -3,15 +3,15 @@
 Authors: Dr. Liangliang Gao (with scripts adapted from Dr. Narinder Singh (KSU, USA)  and Dr. Martin Mascher (IPK Germany))
 
 ## Software dependencies
-SLURM High performance computing job submission system
-HISAT2 V2.1.0
-SAMTOOLS v1.9 
-BCFTOOLS v1.9
-GNU Parallel 20160822
-AWK 4.0.2
-R 3.6.0
-Rscript 3.6.0
-R packages (data.table v1.12.8); (openxlsx 4.1.01); (zoo 1.8-6) 
+- SLURM High performance computing job submission system
+- HISAT2 V2.1.0
+- SAMTOOLS v1.9 
+- BCFTOOLS v1.9
+- GNU Parallel 20160822
+- AWK 4.0.2
+- R 3.6.0
+- Rscript 3.6.0
+- R packages (data.table v1.12.8); (openxlsx 4.1.01); (zoo 1.8-6) 
 
 ## (1)  alignment using hisat2
 alignment_to_ref
