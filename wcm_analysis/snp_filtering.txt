@@ -1,0 +1,7 @@
+## vcf filtering - 2 steps 
+
+## STEP1 - filter by DP >=4 and QUAL >30
+bcftools filter -g3 -i 'FMT/DP>=4 & QUAL>30' file.vcf > DP4_QUAL30_file.vcf
+
+## STEP 2 - filter by MAF=0.1, NA=85 and HET=5
+vcf_MAF_Missing_Het_filter.pl DP4_QUAL30_file.vcf MAF NA HET
