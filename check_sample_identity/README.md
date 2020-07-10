@@ -1,5 +1,5 @@
 
-# Aligning whole genome deep sequencing (10-30x) and skim sequencing (GBS or Nextera) tauschii samples to reference AL8, call SNPs and calculate percent identical calls for samples potentially same origin.
+# Aligning whole genome deep sequencing (10-30x) and skim sequencing (GBS or Nextera) tauschii samples to reference AL8, call SNPs and calculate proportion of identical calls for samples potentially same origin.
 Authors: Dr. Liangliang Gao (with scripts adapted from Dr. Narinder Singh (KSU, USA)  and Dr. Martin Mascher (IPK Germany))
 
 ## Software dependencies
@@ -22,5 +22,4 @@ call.snps.Aet_v4.cmb.owwc.275.gbs258.nextera937.zsh
 
 ## (3) convert VCF file to long format and calculate percent identical calls for samples presumably same origin
 vcf2long.2pct.ident.275.258.937.sh
-
 
