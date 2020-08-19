@@ -19,7 +19,7 @@ if __name__ == '__main__':
     if sys.version_info[0] < 3:
         sys.stderr.write('Python version 3 or above required')
         
-    parser = argparse.ArgumentParser(description = "AgRenSeq with Generalized Linear Model")
+    parser = argparse.ArgumentParser(description = "Kmer Association mapping with Generalized Linear Model")
     
     inputMatrix = parser.add_argument_group('Kmer presence/absence matrix')
     inputMatrix.add_argument('-i', '--inputmatrix',  required=True, help='Path to file containing the gzipped presence/absence matrix of kmers')
@@ -43,7 +43,9 @@ if __name__ == '__main__':
 
     parser.add_argument("-c", "--correlationthreshold", type=float, default = 0.2, help="only those k-mers whose correlation with phenotype is greater than this value are retained for  regression analysis")
 
-    parser.add_argument("-pv", "--pvalthreshold", type=float, default = 15.0, help="only those k-mers with p-value greater than this value are retained")
+    parser.add_argument("-mc", "--mincount", type=int, default = 4, help="only those k-mers are retained for regression analysis which are present/absent in more than this number of accessions.")
+
+    parser.add_argument("-pv", "--pvalthreshold", type=float, default = 6.0, help="only those k-mers with log10 of p-value greater than this value are retained")
 
     parser.add_argument("-st", "--stackman", help="convert phenotype scores from Stackman's IT to AgRenSeq scores", action="store_true")
 
@@ -121,6 +123,7 @@ if __name__ == '__main__':
     pca_dimensions = args.pcadimensions
 
     cor_threshold = args.correlationthreshold
+    min_count = args.mincount
     pval_threshold = args.pvalthreshold
 
 
@@ -129,8 +132,9 @@ if __name__ == '__main__':
         print('\nFile ' + output_filename + ' already exists. \nTerminate the program if you do not want to overwrite.')
              
 				
-    projection = KmerProjection( p, assembly_filename, inputMatrix_filename, header_filename, snp_filename, pca_dimensions, cor_threshold, pval_threshold )
+    projection = KmerProjection( p, assembly_filename, inputMatrix_filename, header_filename, snp_filename, pca_dimensions, cor_threshold, pval_threshold, min_count )
 			
     projection.readAssembly_GLM()
     projection.readMatrix_GLM()
     projection.writeAssociationScore_GLM( output_filename )
+    

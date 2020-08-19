@@ -38,12 +38,13 @@ class KmerProjection(object):
     @param pcaDimensions: number of significant PCA dimensions retained for regression analysis
     @param cor_threshold: correlation threshold for pre-filtering
     """
-    def __init__(self, phenotype, assemblyFile, presenceMatrix, headerFile, snpFile, pcaDimensions, cor_threshold, pval_threshold):
+    def __init__(self, phenotype, assemblyFile, presenceMatrix, headerFile, snpFile, pcaDimensions, cor_threshold, pval_threshold, min_count):
 
         self.associationMatrix = {}
         self.phenotype = phenotype
         self.cor_threshold = cor_threshold
         self.pval_threshold = pval_threshold
+        self.min_count = min_count
         
         self.assemblyFile = assemblyFile
         self.presenceMatrix = presenceMatrix
@@ -65,7 +66,7 @@ class KmerProjection(object):
     """    
     def computePCA(self, n_dimensions):
 
-        snpDF = pd.DataFrame.from_csv(self.snpFile, sep = "\t")
+        snpDF = pd.read_csv(self.snpFile, sep = "\t", index_col=0)
 
         # retain only those accessions in SNP markers matrix for which phenotype scores are stored
         snpDF_reduced = snpDF.loc[self.phenotype.phenoScores_series.index]
@@ -100,13 +101,11 @@ class KmerProjection(object):
                 presence_sqsum += 1
                 presence_pheno_dot_product += self.phenotype.phenoScores_dict[accession]
 
+        # if k-mer is present/absent in more than min_count, k-mer is given an correlation score of 0, ensuring that it is pre-filtered.
+        if presence_sum < self.min_count or presence_sum > n_accessions-self.min_count:
+            return 0
+
         rho_presence = math.sqrt(n_accessions*presence_sqsum - presence_sum*presence_sum)
-
-        # if rho_presence is 0, k-mer is either present in all the accessions or absent in all the accessions, therefore not informative for association analysis.
-        # to avoid division by 0 in correlation calculation, k-mer is given an association score of -1.0, ensuring that it is pre-filtered.
-        if rho_presence == 0:
-            return -1.0 
-
         correlationScore = (n_accessions*presence_pheno_dot_product - presence_sum*pheno_sum)/(rho_presence*rho_pheno)    
 
         return correlationScore
@@ -131,7 +130,7 @@ class KmerProjection(object):
         # pvalue for nested models
         pval = results.compare_lr_test(self.null_results)[1]
 
-        return -np.log(pval)
+        return -np.log10(pval)
     
 
     """
@@ -193,9 +192,9 @@ class KmerProjection(object):
                 if abs(correlation) > self.cor_threshold:
                     pvalF = self.getGLMpval(split[1], header)
                     if pvalF > self.pval_threshold:
-                        self.associationMatrix[kmerF] = [correlation,pvalF]  
+                        self.associationMatrix[kmerF] = [int(correlation*100),int(pvalF*100)]  
                         if bool_kmerR:
-                            self.associationMatrix[kmerR] = [correlation,pvalF]
+                            self.associationMatrix[kmerR] = [int(correlation*100),int(pvalF*100)]
 
             else:
                 if bool_kmerR:
@@ -203,7 +202,7 @@ class KmerProjection(object):
                     if abs(correlation) > self.cor_threshold:
                         pvalR = self.getGLMpval(split[1], header)
                         if pvalR > self.pval_threshold:
-                            self.associationMatrix[kmerR] = [correlation,pvalR]  
+                            self.associationMatrix[kmerR] = [int(correlation*100),int(pvalF*100)]  
                                         
         gz.close()
     
@@ -234,7 +233,7 @@ class KmerProjection(object):
             for i in range(len(sequence) - self.kmerSize + 1):
                 kmer =  sequence[i:i+self.kmerSize].upper()
                 # possible to encode kmers as bitarrays, but no practically significant difference in resource requirements.
-                self.associationMatrix[kmer] = [0.0,-1.0]
+                self.associationMatrix[kmer] = [0,-1]
 
         print("...finished. Recorded " + str(len(self.associationMatrix)) + " kmers.")
     
@@ -256,21 +255,24 @@ class KmerProjection(object):
         
         for fasta in fasta_sequences:
             name, sequence = fasta.id, str(fasta.seq)
+            chrm = name.split(':')[0]
+            start,end = name.split(':')[1].split('_')
             h = {}
             for i in range(len(sequence) - self.kmerSize + 1):                
                 kmer = sequence[i:i+self.kmerSize].upper()
-                correlation, associationScore  = self.associationMatrix[kmer] 
+                correlation = self.associationMatrix[kmer][0]/100 
+                associationScore  = self.associationMatrix[kmer][1]/100
                 if abs(correlation) > self.cor_threshold and associationScore > self.pval_threshold:
                     if correlation < 0:
                         associationScore = -1*associationScore
                     num = 0
                     if associationScore in h:
-                        num = h[associationScore]
+                        num = h[associationScore][0]
                     num += 1
-                    h[associationScore] = num
+                    h[associationScore] = [num,correlation]
                                  
-            for associationScore, num in h.items():
-                out.write(name + "\t" + str(associationScore) + "\t" + str(num) + "\n")
+            for associationScore, ele in h.items():
+                out.write(chrm + "\t" + start + "\t" + end + "\t" + str(abs(associationScore)) + "\t" + str(ele[1]) + "\t" + str(ele[0]) + "\n")
 
         out.close()
         
