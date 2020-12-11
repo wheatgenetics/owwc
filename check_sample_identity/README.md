@@ -23,3 +23,7 @@ call.snps.Aet_v4.cmb.owwc.275.gbs258.nextera937.zsh
 ## (3) convert VCF file to long format and calculate percent identical calls for samples presumably same origin
 vcf2long.2pct.ident.275.258.937.sh
 
+## (4)convert VCF files to long format and calculate percent identical calls for all samples (all vs all)
+vcf2filter.ipkmm.modif.2long.2pctident.275.ex31.sh
+
+
