@@ -5,19 +5,28 @@ kGWAS is an extension of [AgRenSeq_GLM](https://github.com/kgaurav1208/AgRenSeq_
 
 ### 1: Matrix construction
 
-Count k-mers from either trimmed or raw read files for each accession using jellyfish
+- Count k-mers from either trimmed or raw read files for each accession using jellyfish.
 
 ```
 zcat accession1_R?.fastq.gz | jellyfish count -C -m 51 -s 3G -o accession1.jf /dev/fd/0
 jellyfish dump -L 2 -ct accession1.jf > accession1.dump.txt
 ```
 
-Keep both the jellyfish files and the dump files in separate folders and run the following script:
+- Create a configuration file, `jellies.cfg`, containing the name of the
+accession, tab-separated by the path to its jellyfish
 
 ```
-python create_matrix.py -d dump_dir -j jf_dir -o presenceMatrix.txt
+accession1	path/to/accession1.jf
+accession2	path/to/accession2.jf
+...
 ```
 
+- Run the following script for the jellyfish dump file of each accession in parallel:
+
+```
+python create_matrix.py -a accession1 -j accession1.dump.txt -c jellies.cfg -o presenceMatrix_accession1.txt
+```
+Note that the above step requires all the jellyfish files to be present in the working space, but not all the dump files. The dump files can be moved to the secondary storage (eg, hard disks) after generation, brought into the working space only for processing and deleted after processing. Optionally, the output of above script for each accession can be concatenated, sorted and re-split into similar-sized chunks.
 
 
 ### 2: Assembly for k-mer mapping 
@@ -88,11 +97,14 @@ python gwas_plot.py merged.txt chromosome_lengths.txt plot.eps
 
 ## Pre-requisites
 
+### Jellyfish
+Install [Jellyfish](https://github.com/gmarcais/Jellyfish) with Python binding.
+
 ### Python 3 and above
 
 The code has been tested in Python 3.5.3. 
 
-The following Python modules are required:
+The following Python modules are required for GWAS:
 
 * `numpy` 
 * `pandas` 
@@ -101,7 +113,6 @@ The following Python modules are required:
 * `statsmodels`: for regression analysis
 * `bitarray`
 * `matplotlib`: for plotting
-
 
 
 #### Parameters
