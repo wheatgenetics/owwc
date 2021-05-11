@@ -6,7 +6,7 @@ The code has been tested in Python 3.5.3.
 
 The following Python modules are required:
 
-* `Biopython`
+* `Biopython` (tested with v1.77)
 
 ## Usage
 

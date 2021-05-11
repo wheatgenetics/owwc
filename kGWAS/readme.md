@@ -98,7 +98,7 @@ python gwas_plot.py merged.txt chromosome_lengths.txt plot.eps
 ## Pre-requisites
 
 ### Jellyfish
-Install [Jellyfish](https://github.com/gmarcais/Jellyfish) with Python binding.
+Install [Jellyfish](https://github.com/gmarcais/Jellyfish) version 2.2.6 or above with Python binding.
 
 ### Python 3 and above
 
@@ -106,13 +106,13 @@ The code has been tested in Python 3.5.3.
 
 The following Python modules are required for GWAS:
 
-* `numpy` 
-* `pandas` 
-* `Biopython`: to parse assembly file
-* `scikit-learn`: to compute PCA from SNP markers matrix
-* `statsmodels`: for regression analysis
-* `bitarray`
-* `matplotlib`: for plotting
+* `numpy` (tested with v1.17.4 and v1.18.5)
+* `pandas` (tested with v0.23.0 and v1.0.5)
+* `Biopython` (tested with v1.72 and v1.77): to parse assembly file
+* `scikit-learn` (tested with v0.19.1 and v0.23.1): to compute PCA from SNP markers matrix
+* `statsmodels` (tested with v0.9.0. For the more recent versions of `statsmodels`, you might have to change the import statement in `KmerProjection_GLM.py` from `import statsmodels.formula.api as smf` to `import statsmodels.api as smf`): for regression analysis
+* `bitarray` (tested with v0.8.1 and v1.4.0)
+* `matplotlib` (tested with v3.3.0): for plotting
 
 
 #### Parameters

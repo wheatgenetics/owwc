@@ -1,13 +1,13 @@
 ## Pre-requisites
 
 ### Jellyfish
-Install [Jellyfish](https://github.com/gmarcais/Jellyfish) with Python binding.
+Install [Jellyfish](https://github.com/gmarcais/Jellyfish) version 2.2.6 or above with Python binding.
 
 ### Python 3 and above
 
 The following Python modules are required:
 
-* `Biopython`: to parse assembly file
+* `Biopython` (tested with v1.72 and v1.77): to parse assembly file
 
 ## Description
 

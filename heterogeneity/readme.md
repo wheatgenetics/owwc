@@ -6,7 +6,7 @@ The code has been tested in Python 3.5.3.
 
 The following Python modules are required:
 
-* `pysam`: to parse assembly file
+* `pysam` (tested with v0.15.2): to parse assembly file
 
 ## Usage
 
