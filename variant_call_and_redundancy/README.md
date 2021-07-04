@@ -1,5 +1,5 @@
 
-# Aligning whole genome deep sequencing (10-30x) and skim sequencing (GBS or Nextera) tauschii samples to reference AL8, call SNPs and calculate proportion of identical calls for samples potentially same origin.
+# Aligning whole genome deep sequencing (10-30x) and skim sequencing (GBS or Nextera) tauschii samples to reference AL8, call SNPs and calculate percent identity by state.
 Authors: Dr. Liangliang Gao (with scripts adapted from Dr. Narinder Singh (KSU, USA)  and Dr. Martin Mascher (IPK Germany))
 
 ## Software dependencies
