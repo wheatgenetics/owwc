@@ -8,7 +8,7 @@ import sys
 from Phenotype_GLM import Phenotype
 import pandas as pd
 from sklearn.decomposition import PCA
-import statsmodels.formula.api as smf
+from statsmodels.regression.linear_model import OLS
 import numpy as np
 import math
 import time
@@ -58,7 +58,7 @@ class KmerProjection(object):
         # predict phenotype scores using only PCA dimensions
         self.nullDF = self.pcaDF.copy()
         self.nullDF['bias'] = np.ones(self.nullDF.shape[0]).reshape(-1,1)
-        self.null_results = smf.OLS(self.phenotype.phenoScores_series, self.nullDF).fit()
+        self.null_results = OLS(self.phenotype.phenoScores_series, self.nullDF).fit()
 
 
     """
@@ -125,7 +125,7 @@ class KmerProjection(object):
         pca_presenceDF['presence'] = presence_series.loc[self.phenotype.phenoScores_series.index]
         
         # predict phenotype scores based on presence/absence of k-mer, with PCA dimensions as covariates        
-        results = smf.OLS(self.phenotype.phenoScores_series, pca_presenceDF).fit()    
+        results = OLS(self.phenotype.phenoScores_series, pca_presenceDF).fit()
 
         # pvalue for nested models
         pval = results.compare_lr_test(self.null_results)[1]
