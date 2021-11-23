@@ -202,7 +202,7 @@ class KmerProjection(object):
                     if abs(correlation) > self.cor_threshold:
                         pvalR = self.getGLMpval(split[1], header)
                         if pvalR > self.pval_threshold:
-                            self.associationMatrix[kmerR] = [int(correlation*100),int(pvalF*100)]  
+                            self.associationMatrix[kmerR] = [int(correlation*100),int(pvalR*100)]  
                                         
         gz.close()
     
